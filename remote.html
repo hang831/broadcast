@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>WebRTC Scalable Broadcast System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+  integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+  <style>
+    
+    video {
+      display: block;
+    }
+    
+    section {
+      opacity: 1;
+      transition: opacity 500ms ease-in-out;
+    }
+  
+   
+  .invisible {
+    opacity: 0.2;
+  }
+  
+    .camView {
+      position: relative;
+      float: left;
+      width: calc(100% - 20px);
+      margin: 10px;
+      cursor: pointer;
+    }
+  
+    
+    .camView p {
+      position: absolute;
+      padding: 5px;
+      background-color: rgba(255, 111, 0, 0.85);
+      color: #FFF;
+      border: 1px dashed rgba(255, 255, 255, 0.7);
+      z-index: 2;
+      font-size: 12px;
+    }
+    
+    .highlighter {
+      background: rgba(0, 255, 0, 0.25);
+      border: 1px dashed #fff;
+      z-index: 1;
+      position: absolute;
+    }
+
+  .bottom-container {
+  max-width: 960px;
+  margin: auto;
+  padding: 10px;
+  }
+
+    #photos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    }
+
+    #photos img {
+    width: 100%;
+    border-radius: 10px;
+    border:1px solid whitesmoke;
+   
+    }
+
+    #canvas {
+    display: none;
+    }
+
+    #overlay-canvas {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font: 18px Arial;
+      color: white;
+      z-index: 999;
+    }
+
+    #canvas_face{
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      
+      
+      z-index: 999;
+    }
+  </style>
+
+</head>
+<body class="text-white text-bg-dark">
+    <nav class="navbar navbar-expand-lg bg-dark ">
+        <div class="container-fluid">
+          <a class="navbar-brand  text-white text-bg-dark" href="#">EIE4428 Mini Project</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item ">
+                <span class="nav-link active  text-white text-bg-dark">Leung Wui Hang</span>
+              </li>
+              <li class="nav-item">
+                <span class="nav-link active  text-white text-bg-dark">Kevin kwok</span>
+              </li>
+             
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
+
+  <h1 class=" text-center">
+
+    <p class="no-mobile">
+        WebRTC Scalable Broadcast System
+    </p>
+  </h1>
+  <br />
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-md-8">
+      <!--loading icon if content not fully loaded-->
+          <div class="d-flex justify-content-center" id="loading">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        <section class="make-center invisible" id="demos">
+            <p style="margin: 0; padding: 0; padding-bottom: 20px;">
+                <div class="make-center">
+                
+                <div class="input-group">
+                    <span class="input-group-text">Broadcast ID</span>
+                   
+                    <input class="text-black form-control" type="text" id="broadcast-id" value="eie4428-project" autocorrect=off autocapitalize=off size=20 disabled >
+                    <button class="btn btn-primary" id="open-or-join">Join Broadcast</button>
+                </div>
+
+
+                <div class="make-center" id="broadcast-viewers-counter-guest"></div>
+            </p>
+            <div id="liveView" class="camView" style="display: inline-block;">
+              <video id="videoOutput" controls loop width="100%" height="100%" ></video>
+              <canvas id="canvas_face" width="100%" height="100%" ></canvas>
+              <video id="video-preview" controls loop  width="100%" height="100%" hidden></video>
+              <canvas id="overlay-canvas" width="100%" height="100%" hidden></canvas>
+            
+            <br/>
+
+            <button id="photo-button" class="btn btn-success">
+                <i class="fa-solid fa-camera"></i> Take Photo
+            </button>
+
+            <button id="disconnect-button" class="btn btn-danger">
+                 Disconnect
+            </button>
+
+            <button id="recording" class="btn btn-primary" disabled>
+                Recording
+           </button>
+
+           <button id="stoprecording" class="btn btn-primary" disabled>
+            Stop Recording
+           </button>
+           <button id="showrecording" class="btn btn-primary" disabled>
+            Show Recording
+           </button>
+           
+           <video id="video-record" controls loop muted class="d-none"></video>
+              <hr>
+            <canvas id="canvas"></canvas>
+            <div class="bottom-container">
+              
+
+                <div id="photos"></div>
+                <hr>
+               
+              </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-12 col-md-4" style="z-index: 9999;">
+        <h2>Basic camera setting</h2>
+        <div class="accordion" id="accordionPanelsStayOpenExample" disabled>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                 Camera Resolution
+                </button>
+              </h2>
+             
+              <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <p id="initial_WH">Previous Width=? ; Previous Height=?</p>
+                 <p>W:   <input class="form-control" type="text" id="vid-width" value="600"></p>
+                 <p>H: <input  class="form-control" type="text" id="vid-height" value="600"></p>
+                
+                 <button id="change-size" class="btn btn-primary mb-1" disabled>Change screen size</button>
+                 <button id="reset-size" class="btn btn-primary mb-1" disabled>Reset default size</button>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                  Camera Filter
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <select id="photo-filter" class="form-select" aria-label="Default select example" disabled>
+                        <option selected value="none">Normal</option>
+                        <option value="grayscale(100%)">Grayscale</option>
+                        <option value="sepia(100%)">Sepia</option>
+                        <option value="invert(100%)">Invert</option>        
+                        <option value="hue-rotate(90deg)">Hue</option>
+                        <option value="blur(10px)">Blur</option>
+                        <option value="contrast(200%)">Contrast</option>
+                        <option value="brightness(50%)">Brightness 50</option>
+                        <option value="opacity(50%)">Opacity 50</option>
+                        <option value="saturate(50%)">Saturate 50</option>
+                      </select>
+                      <br/>
+                      <button id="clear-button" class="btn btn-primary" disabled>Clear Image and Filter</button>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                    Camera Filter (Advanced)
+                </button>
+              </h2>
+              <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <form id="photo-filter-advanced">
+                        <label for="grayscale">Grayscale (between 0% and 100%):</label>
+                        <input type="range" id="grayscale" name="grayscale" min="1" max="100" value="1" disabled>
+                        <label for="sepia">Sepia (between 0% and 100%):</label>
+                        <input type="range" id="sepia" name="sepia" min="1" max="100" value="1" disabled>
+                        <label for="invert">Invert (between 0% and 100%):</label>
+                        <input type="range" id="invert" name="invert" min="1" max="100" value="1" disabled>
+                        <label for="brightness">Brightness (between 0% and 100%):</label>
+                        <input type="range" id="brightness" name="brightness" min="1" max="100" value="100" disabled>
+                        <label for="opacity">Opacity (between 0% and 100%):</label>
+                        <input type="range" id="opacity" name="opacity" min="1" max="100" value="100" disabled>
+                        <label for="contrast">Contrast (between 0% and 1000%):</label>
+                        <input type="range" id="contrast" name="contrast" min="1" max="1000" value="100" disabled>
+                        <label for="saturate">Saturate (between 0% and 1000%):</label>
+                        <input type="range" id="saturate" name="saturate" min="1" max="1000" value="100" disabled>
+                        
+                    </form>
+                      <br/>
+                      <button id="clear-button2" class="btn btn-primary" disabled>Clear Image and Filter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <hr>
+        <h2>Advanced features</h2>
+        <button id="objectRecognizeOn" class="btn btn-primary mb-2" disabled>Open Object Recognition</button>
+        <button id="objectRecognizeOff" class="btn btn-secondary mb-2" disabled>Close Object Recognition</button>  
+        <br/>
+        <button id="FaceTrackingOn" class="btn btn-primary mb-1" disabled>Open Face Tracking</button>
+        <button id="FaceTrackingOff" class="btn btn-secondary mb-1" disabled>Close Face Tracking</button>  
+    </div>
+  </div>
+</div> 
+
+ <!-- Bootstrap--> 
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://muazkhan.com:9001/dist/RTCMultiConnection.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.1.4/adapter.js"></script>
+<script src="https://muazkhan.com:9001/socket.io/socket.io.js"></script>
+<!-- Import TensorFlow.js library -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js" type="text/javascript"></script>
+<!-- Load the coco-ssd model to use to recognize things in images -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
+ <script src="level1.js"></script>
+ <script src="https://www.webrtc-experiment.com/RecordRTC.js"></script> 
+
+ <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+
+ <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>-->
+ <!-- Optional: Include below scripts if you want to use MediaPipe runtime. -->
+ <!--  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"> </script> -->
+ 
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+<script src="https://unpkg.dev/@vladmandic/face-api/dist/face-api.js"></script>-->
+<script>
+// recording is disabled because it is resulting for browser-crash
+// if you enable below line, please also uncomment above "RecordRTC.js"
+var enableRecordings = true;
+
+var connection = new RTCMultiConnection();
+
+let roomopened = true;
+
+// https://www.rtcmulticonnection.org/docs/iceServers/
+// use your own TURN-server here!
+connection.iceServers = [{
+    'urls': [
+        'stun:stun.l.google.com:19302',  
+        'stun:stun1.l.google.com:19302',
+        'stun:stun2.l.google.com:19302',
+        'stun:stun.l.google.com:19302?transport=udp',
+        
+    ]
+}];
+
+// its mandatory in v3
+connection.enableScalableBroadcast = true;
+
+// each relaying-user should serve only 1 users
+connection.maxRelayLimitPerUser = 1;
+
+// we don't need to keep room-opened
+// scalable-broadcast.js will handle stuff itself.
+connection.autoCloseEntireSession = true;
+
+// by default, socket.io server is assumed to be deployed on your own URL
+connection.socketURL = '/';
+
+// comment-out below line if you do not have your own socket.io server
+ connection.socketURL = 'https://muazkhan.com:9001/';
+
+connection.socketMessageEvent = 'scalable-media-broadcast-demo';
+
+
+// Store the object recognition resulting model in the global scope of our app.
+var model = undefined;
+let model_face;
+// Before we can use COCO-SSD class we must wait for it to finish
+// loading. Machine Learning models can be large and take a moment 
+// to get everything needed to run.
+// Note: cocoSsd is an external object loaded from our index.html
+// script tag import so ignore any warning in Glitch.
+cocoSsd.load().then(function (loadedModel) {
+model = loadedModel;
+//console.log(model);
+
+//remove loading icon
+loading.classList.add('invisible');
+// Show demo section now model is ready to use.
+demosSection.classList.remove('invisible');
+});
+
+
+// document.getElementById('broadcast-id').value = connection.userid;
+
+//disable audio
+connection.mediaConstraints = {
+    video: true,
+    audio: false
+};
+
+
+
+// user need to connect server, so that others can reach him.
+connection.connectSocket(function(socket) {
+    socket.on('logs', function(log) {
+        document.querySelector('h1').innerHTML = log.replace(/</g, '----').replace(/>/g, '___').replace(/----/g, '(<span style="color:red;">').replace(/___/g, '</span>)');
+    });
+
+    // this event is emitted when a broadcast is already created.
+    socket.on('join-broadcaster', function(hintsToJoinBroadcast) {
+        console.log('join-broadcaster', hintsToJoinBroadcast);
+
+        connection.session = hintsToJoinBroadcast.typeOfStreams;
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveVideo: !!connection.session.video,
+            OfferToReceiveAudio: !!connection.session.audio
+        };
+        connection.broadcastId = hintsToJoinBroadcast.broadcastId;
+        connection.join(hintsToJoinBroadcast.userid);
+    });
+
+    socket.on('rejoin-broadcast', function(broadcastId) {
+        console.log('rejoin-broadcast', broadcastId);
+      
+        connection.attachStreams = [];
+        socket.emit('check-broadcast-presence', broadcastId, function(isBroadcastExists) {
+            if (!isBroadcastExists) {
+                roomopened=false;
+            
+              alert("EIE4428 Project Broadcast not yet start.");
+              return;
+                // connection.userid = broadcastId;
+            } else{
+           roomopened=true;
+            socket.emit('join-broadcast', {
+                broadcastId: broadcastId,
+                userid: connection.userid,
+                typeOfStreams: connection.session
+            });
+        }
+        });
+    });
+
+    socket.on('broadcast-stopped', function(broadcastId) {
+        // alert('Broadcast has been stopped.');
+        // location.reload();
+        console.error('broadcast-stopped', broadcastId);
+        alert('This broadcast has been stopped.');
+    });
+
+    // this event is emitted when a broadcast is absent.
+    socket.on('start-broadcasting', function(typeOfStreams) {
+        console.log('start-broadcasting', typeOfStreams);
+
+        // host i.e. sender should always use this!
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveVideo: false,
+            OfferToReceiveAudio: false
+        };
+        connection.session = typeOfStreams;
+
+        // "open" method here will capture media-stream
+        // we can skip this function always; it is totally optional here.
+        // we can use "connection.getUserMediaHandler" instead
+        connection.open(connection.userid);
+    });
+});
+
+//when refresh broswer
+window.onbeforeunload = function() {
+    document.getElementById('open-or-join').disabled = false;
+};
+
+let canvas_face = document.getElementById('canvas_face');
+
+
+var videoPreview = document.getElementById('video-preview');
+var videoOutput = document.getElementById('videoOutput');
+var videoRecord = document.getElementById('video-record');
+
+const liveView = document.getElementById('liveView');
+const demosSection = document.getElementById('demos');
+const loading = document.getElementById('loading');
+videoOutput.addEventListener('loadeddata', predictWebcam);
+videoOutput.addEventListener('loadeddata', recordbuttonenable);
+videoOutput.addEventListener('loadeddata', getvideosize);
+//videoOutput.addEventListener('loadeddata', test);
+
+videoOutput.addEventListener('loadeddata', function(){faceDetection(this, context_face, videoOutput.ClientWidth, videoOutput.ClientHeight);}, false);
+
+
+
+connection.onstream = function(event) {
+    if (connection.isInitiator && event.type !== 'local') {
+     
+        return;
+    }
+    connection.isUpperUserLeft = false;
+    
+    //videoPreview.srcObject = event.stream;
+    
+    //videoPreview.play();
+    
+    videoPreview.userid = event.userid;
+
+    if (event.type === 'local') {
+        videoPreview.muted = true;      
+    }
+
+const canvas = document.getElementById('overlay-canvas');
+
+const context = canvas.getContext('2d');
+
+function drawDateTimeOverlay() {
+  // Clear the canvas
+  
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the video frame
+  context.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+
+  // Draw the date-time overlay
+  const date = new Date().toLocaleString();
+  //context.fillStyle = "grey";
+  //context.fillRect(20, 20, 250, 50);
+  context.font = '20px serif';
+  context.fillStyle = 'red';
+  context.fillText(date, 10, 30);
+
+  // Request the next animation frame
+  requestAnimationFrame(drawDateTimeOverlay);
+}
+
+    // Get the video stream
+navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then(function(videoStream) {
+    // Create a video element to display the video stream
+    //const videoElement = document.createElement('video');
+   // videoElement.srcObject = videoStream;
+    //videoElement.play();
+   // console.log(videoStream);
+
+    // Set up the canvas and draw the date-time overlay
+    canvas.width = videoOutput.clientWidth;
+    canvas.height = videoOutput.clientHeight;
+    drawDateTimeOverlay();
+
+    // Capture the canvas as a separate stream
+    const canvasStream = canvas.captureStream();
+
+    // Merge the video and canvas streams into a combined stream
+    const combinedStream = new MediaStream([...videoStream.getTracks(), ...canvasStream.getTracks()]);
+
+    videoPreview.srcObject = combinedStream;
+    videoPreview.play();
+
+    
+    videoOutput.srcObject =canvasStream;
+    videoOutput.play();
+    //event.stream.addTrack(videoTrack, canvasStream);
+
+  })
+  .catch(function(error) {
+    console.log('Error accessing video stream:', error);
+  });
+
+
+
+
+    if (connection.isInitiator == false && event.type === 'remote') {
+      
+        // he is merely relaying the media
+        connection.dontCaptureUserMedia = true;
+        connection.attachStreams = [event.stream];
+        connection.sdpConstraints.mandatory = {
+            OfferToReceiveAudio: false,
+            OfferToReceiveVideo: false
+        };
+
+        connection.getSocket(function(socket) {
+            socket.emit('can-relay-broadcast');
+
+            if (connection.DetectRTC.browser.name === 'Chrome' || connection.DetectRTC.browser.name === 'Edge') {
+                connection.getAllParticipants().forEach(function(p) {
+                    if (p + '' != event.userid + '') {
+                        var peer = connection.peers[p].peer;
+                        peer.getLocalStreams().forEach(function(localStream) {
+                            peer.removeStream(localStream);
+                        });
+                        event.stream.getTracks().forEach(function(track) {
+                            peer.addTrack(track, event.stream);
+                          
+                        });
+                        connection.dontAttachStream = true;
+                        connection.renegotiate(p);
+                        connection.dontAttachStream = false;
+                    }
+                });
+            }
+
+            if (connection.DetectRTC.browser.name === 'Firefox') {
+                // Firefox is NOT supporting removeStream method
+                // that's why using alternative hack.
+                // NOTE: Firefox seems unable to replace-tracks of the remote-media-stream
+                // need to ask all deeper nodes to rejoin
+                connection.getAllParticipants().forEach(function(p) {
+                    if (p + '' != event.userid + '') {
+                        connection.replaceTrack(event.stream, p);
+                    }
+                });
+            }
+
+           
+        });
+    }
+
+    // to keep room-id in cache
+    localStorage.setItem(connection.socketMessageEvent, connection.sessionid);
+   
+  };
+
+// ask node.js server to look for a broadcast
+// if broadcast is available, simply join it. i.e. "join-broadcaster" event should be emitted.
+// if broadcast is absent, simply create it. i.e. "start-broadcasting" event should be fired.
+document.getElementById('open-or-join').onclick = function() {
+  
+    var broadcastId = document.getElementById('broadcast-id').value;
+    if (broadcastId.replace(/^\s+|\s+$/g, '').length <= 0) {
+        alert('Please enter broadcast-id');
+        document.getElementById('broadcast-id').focus();
+        return;
+    }
+    
+
+    connection.extra.broadcastId = broadcastId;
+
+    connection.session = {
+        audio: false,
+        video: true,
+        oneway: true
+    };
+
+    connection.getSocket(function(socket) {
+        socket.emit('check-broadcast-presence', broadcastId, function(isBroadcastExists) {
+            if (!isBroadcastExists) {
+                roomopened=false;           
+              alert("EIE4428 Project Broadcast not yet start.");
+              document.getElementById('open-or-join').disabled = false;
+              return;
+                // connection.userid = broadcastId;
+            } else{
+            
+            roomopened=true;  
+            document.getElementById('open-or-join').disabled = true;  
+            console.log('check-broadcast-presence', broadcastId, isBroadcastExists);
+
+            socket.emit('join-broadcast', {
+                broadcastId: broadcastId,
+                userid: connection.userid,
+                typeOfStreams: connection.session
+            });
+           
+            
+            document.getElementById('change-size').disabled = false; 
+            document.getElementById('reset-size').disabled = false; 
+            document.getElementById('clear-button').disabled = false; 
+            document.getElementById('clear-button2').disabled = false; 
+            document.getElementById('objectRecognizeOn').disabled = false; 
+           // document.getElementById('objectRecognizeOff').disabled = false; 
+            document.getElementById('FaceTrackingOn').disabled = false; 
+            //document.getElementById('FaceTrackingOff').disabled = false; 
+
+
+            document.getElementById('photo-filter').disabled = false; 
+            document.getElementById('grayscale').disabled = false; 
+            document.getElementById('sepia').disabled = false; 
+            document.getElementById('invert').disabled = false; 
+            document.getElementById('brightness').disabled = false; 
+            document.getElementById('opacity').disabled = false; 
+            document.getElementById('contrast').disabled = false; 
+            document.getElementById('saturate').disabled = false; 
+        }
+        });
+    });
+};
+
+connection.onstreamended = function() {};
+
+connection.onleave = function(event) {
+    if (event.userid !== videoPreview.userid) return;
+
+    connection.getSocket(function(socket) {
+        socket.emit('can-not-relay-broadcast');
+
+        connection.isUpperUserLeft = true;
+
+        if (allRecordedBlobs.length) {
+            // playing lats recorded blob
+            var lastBlob = allRecordedBlobs[allRecordedBlobs.length - 1];
+            videoOutput.src = URL.createObjectURL(lastBlob);
+            videoOutput.play();
+            allRecordedBlobs = [];
+        } else if (connection.currentRecorder) {
+            var recorder = connection.currentRecorder;
+            connection.currentRecorder = null;
+            recorder.stopRecording(function() {
+                if (!connection.isUpperUserLeft) return;
+
+                videoOutput.src = URL.createObjectURL(recorder.getBlob());
+                videoOutput.play();
+            });
+        }
+
+        if (connection.currentRecorder) {
+            connection.currentRecorder.stopRecording();
+            connection.currentRecorder = null;
+        }
+    });
+};
+
+var allRecordedBlobs = [];
+var timergoing = false;
+function repeatedlyRecordStream(stream) {
+    if (!enableRecordings) {
+        return;
+    }
+
+    timergoing = true;
+    connection.currentRecorder = RecordRTC(stream, {
+        type: 'video'
+    });
+  
+    connection.currentRecorder.startRecording();
+
+    setTimeout(function() {
+        if (connection.isUpperUserLeft || !connection.currentRecorder) {
+            return;
+        }
+
+        connection.currentRecorder.stopRecording(function() {
+            allRecordedBlobs.push(connection.currentRecorder.getBlob());
+
+            if (connection.isUpperUserLeft) {
+                return;
+            }
+
+            connection.currentRecorder = null;
+            repeatedlyRecordStream(event.stream);
+        });
+    }, 61 * 1000); // 61-seconds max
+    
+   setTimeout(function() {
+    if (timergoing==true){
+      stoprecord();
+      alert("Recording Stopped! Maximum recording time is 60 seconds.");
+    }
+    }, 60 * 1000);
+};
+
+document.getElementById("recording").addEventListener('click', record);
+document.getElementById("stoprecording").addEventListener('click', stoprecord);
+document.getElementById("showrecording").addEventListener('click', showrecord);
+function record() {
+            document.getElementById('recording').disabled = true; 
+            document.getElementById('stoprecording').disabled = false; 
+            // Firefox seems UN_ABLE to record remote MediaStream
+            // WebAudio solution merely records audio
+            // so recording is skipped for Firefox.
+            if (connection.DetectRTC.browser.name === 'Chrome' || connection.DetectRTC.browser.name === 'Edge') {
+                repeatedlyRecordStream(videoOutput.srcObject);
+            }
+
+        }
+
+function stoprecord(){
+            connection.currentRecorder.stopRecording();     
+            document.getElementById('showrecording').disabled = false; 
+            document.getElementById('stoprecording').disabled = true; 
+            timergoing= false;
+        }
+        
+function showrecord(){
+            videoRecord.classList.remove("d-none");
+            videoRecord.src = URL.createObjectURL(connection.currentRecorder.getBlob());
+            videoRecord.play();
+            document.getElementById('showrecording').disabled = false;  
+            document.getElementById('recording').disabled = false; 
+}
+
+function recordbuttonenable(){
+            document.getElementById('recording').disabled = false; 
+}
+
+
+
+function disableInputButtons() {
+    document.getElementById('open-or-join').disabled = true;
+    document.getElementById('broadcast-id').disabled = true;
+}
+
+function disconnect() {
+    window.location.reload();   
+}
+
+//const supports = navigator.mediaDevices.getSupportedConstraints();
+
+var VideoStartWidth = 0;
+var VideoStartHeight =0;
+
+var CurrentVideoWidth = 0;
+var CurrentVideoHeight =0;
+
+//var BeforeVideoWidth = 0;
+//var BeforeVideoHeight =0;
+
+var finalVideoWidth = 1; //scale factor
+var finalVideoHeight = 1;//scale factor
+
+function getvideosize(){
+   VideoStartWidth = videoOutput.clientWidth;
+   VideoStartHeight = videoOutput.clientHeight;
+   
+   CurrentVideoWidth =  videoOutput.clientWidth;
+CurrentVideoHeight = videoOutput.clientHeight;
+}
+
+
+
+
+function videoSize(){
+  var width = document.getElementById("vid-width").value;
+  var height = document.getElementById("vid-height").value;
+//console.log("w "+ width2+"; h "+height2);
+
+document.getElementById("initial_WH").innerHTML = "Previous Width="+videoOutput.clientWidth+ "; Previous Height="+videoOutput.clientHeight;
+//console.log("Start: H="+VideoStartHeight+"; W="+VideoStartWidth);
+//console.log("current: H="+videoPreview.clientHeight+"; W="+videoPreview.clientWidth);
+
+//BeforeVideoWidth = videoOutput.clientWidth;
+//BeforeVideoHeight = videoOutput.clientHeight;
+
+//if(width<=VideoStartWidth)     {
+  videoOutput.width = width;
+//}        
+
+//if(width<=VideoStartHeight)     {
+  videoOutput.height = height;
+//}  
+
+canvas_face.width = width;
+canvas_face.height = height-50;
+
+CurrentVideoWidth =  width;
+CurrentVideoHeight = height;
+
+/*
+  var constraints = {};
+  if (supports.width && supports.height) {
+      constraints = {
+          width: width,
+          height: height
+      };
+  }
+
+  connection.applyConstraints({
+      video: constraints
+  }); */
+   finalVideoWidth = CurrentVideoWidth/VideoStartWidth;
+   finalVideoHeight = CurrentVideoHeight/VideoStartHeight;
+}
+
+function resetSize(){
+  videoOutput.width = VideoStartWidth;
+  videoOutput.height = VideoStartHeight;
+  //canvas_face.width = VideoStartWidth;
+  //canvas_face.height = VideoStartHeight;
+  finalVideoWidth =1;
+  finalVideoHeight =1;
+}
+
+document.getElementById("disconnect-button").addEventListener('click', disconnect);
+document.getElementById('change-size').addEventListener('click', videoSize);
+document.getElementById('reset-size').addEventListener('click', resetSize);
+
+// ......................................................
+// ......................Handling broadcast-id................
+// ......................................................
+/*
+var broadcastId = '';
+if (localStorage.getItem(connection.socketMessageEvent)) {
+    broadcastId = localStorage.getItem(connection.socketMessageEvent);
+} else {
+    broadcastId = connection.token();
+}
+var txtBroadcastId = document.getElementById('broadcast-id');
+txtBroadcastId.value = broadcastId;
+txtBroadcastId.onkeyup = txtBroadcastId.oninput = txtBroadcastId.onpaste = function() {
+    localStorage.setItem(connection.socketMessageEvent, this.value);
+}; */
+
+//////////////////Advanced///////////////////////////////////
+
+let objectRecognizeBool = false;
+let faceTrackingBool = false;
+
+document.getElementById("objectRecognizeOn").addEventListener("click", function(){
+  
+    objectRecognizeBool = true;
+   // console.log("1: "+objectRecognizeBool);
+    document.getElementById("objectRecognizeOn").classList.remove("btn-primary");
+    document.getElementById("objectRecognizeOn").classList.add("btn-secondary");
+    document.getElementById("objectRecognizeOff").classList.remove("btn-secondary");
+    document.getElementById("objectRecognizeOff").classList.add("btn-primary");
+    document.getElementById("objectRecognizeOn").disabled = true;
+    document.getElementById("objectRecognizeOff").disabled = false;
+    window.requestAnimationFrame(predictWebcam);
+});
+
+document.getElementById("objectRecognizeOff").addEventListener("click", function(){
+   
+    objectRecognizeBool = false;
+    for (let i = 0; i < children.length; i++) {
+      liveView.removeChild(children[i]);
+    }
+    children.splice(0);
+
+    //console.log("2: "+objectRecognizeBool);
+    document.getElementById("objectRecognizeOff").classList.remove("btn-primary");
+    document.getElementById("objectRecognizeOff").classList.add("btn-secondary");
+    document.getElementById("objectRecognizeOn").classList.remove("btn-secondary");
+    document.getElementById("objectRecognizeOn").classList.add("btn-primary");
+    document.getElementById("objectRecognizeOff").disabled = true;
+    document.getElementById("objectRecognizeOn").disabled = false;
+    window.cancelAnimationFrame(predictWebcam);
+});
+////////////////////////////////////////////////////////////////////
+
+document.getElementById("FaceTrackingOn").addEventListener("click", function(){
+  
+  faceTrackingBool = true;
+
+  document.getElementById("FaceTrackingOn").classList.remove("btn-primary");
+  document.getElementById("FaceTrackingOn").classList.add("btn-secondary");
+  document.getElementById("FaceTrackingOff").classList.remove("btn-secondary");
+  document.getElementById("FaceTrackingOff").classList.add("btn-primary");
+  document.getElementById("FaceTrackingOn").disabled = true;
+  document.getElementById("FaceTrackingOff").disabled = false;
+  
+  faceDetection(videoOutput, context_face, videoOutput.ClientWidth, videoOutput.ClientHeight);
+    }, false);
+
+
+document.getElementById("FaceTrackingOff").addEventListener("click", function(){
+ 
+  faceTrackingBool = false;
+
+
+  document.getElementById("FaceTrackingOff").classList.remove("btn-primary");
+  document.getElementById("FaceTrackingOff").classList.add("btn-secondary");
+  document.getElementById("FaceTrackingOn").classList.remove("btn-secondary");
+  document.getElementById("FaceTrackingOn").classList.add("btn-primary");
+  document.getElementById("FaceTrackingOff").disabled = true;
+  document.getElementById("FaceTrackingOn").disabled = false;
+  clearTimeout(faceDetection,250,videoOutput,context_face,CurrentVideoWidth,CurrentVideoHeight);
+});
+
+//////////////////Advanced///////////////////////////////////
+
+var children = [];
+
+function predictWebcam() {
+ 
+    //console.log(objectRecognizeBool);
+  // Now let's start classifying a frame in the stream.
+  model.detect(videoOutput).then(function (predictions) { //cannot change to videoOutput
+    // Remove any highlighting we did previous frame.
+    for (let i = 0; i < children.length; i++) {
+      liveView.removeChild(children[i]);
+    }
+    children.splice(0);
+
+
+    if (objectRecognizeBool==true) {
+    // Now lets loop through predictions and draw them to the live view if
+    // they have a high confidence score.
+   /*if(finalVideoWidth!=0){
+    
+    console.log(finalVideoWidth);
+   }*/
+
+  
+
+    for (let n = 0; n < predictions.length; n++) {
+      // If we are over 66% sure we are sure we classified it right, draw it!
+      if (predictions[n].score > 0.66) {
+        const p = document.createElement('p');
+        p.setAttribute('class', 'hide_highlighter');
+        p.innerText = predictions[n].class  + ' - with ' 
+            + Math.round(parseFloat(predictions[n].score) * 100) 
+            + '% confidence.';
+        p.style = 'margin-left: ' + (predictions[n].bbox[0])*finalVideoWidth + 'px; margin-top: '
+            + (predictions[n].bbox[1] - 10)*finalVideoHeight + 'px; width: ' 
+            + (predictions[n].bbox[2] - 10)*finalVideoWidth + 'px; top: 0; left: 0;';
+
+        const highlighter = document.createElement('div');
+        highlighter.setAttribute('class', 'highlighter hide_highlighter');
+       
+        highlighter.style = 'left: ' + (predictions[n].bbox[0])*finalVideoWidth + 'px; top: '
+            + (predictions[n].bbox[1]*finalVideoHeight) + 'px; width: ' 
+            + predictions[n].bbox[2]*finalVideoWidth + 'px; height: '
+            + predictions[n].bbox[3]*finalVideoHeight + 'px;';
+
+        liveView.appendChild(highlighter);
+        liveView.appendChild(p);
+        children.push(highlighter);
+        children.push(p);
+      }
+    }
+  
+    //if (objectRecognizeBool==true) {
+    // console.log("running");
+    // Call this function again to keep predicting when the browser is ready.
+    
+    window.requestAnimationFrame(predictWebcam);
+   //}
+  }
+
+  });
+}
+
+
+context_face = canvas_face.getContext('2d');
+
+async function faceDetection(videoOutput, context_face, width, height) {
+canvas_face.width = videoOutput.clientWidth;
+canvas_face.height = videoOutput.clientHeight-50;
+if(!model_face) model_face = await blazeface.load();
+if (faceTrackingBool==true){
+const prediction = await model_face.estimateFaces(videoOutput, false);
+
+if (prediction.length > 0) {
+           // console.log(prediction);
+            // Clear the canvas before drawing the new boxes
+  context_face.clearRect(0, 0, canvas_face.width, canvas_face.height);
+
+            for (let i = 0; i < prediction.length; i++) {
+                const start = prediction[i].topLeft;
+                const end = prediction[i].bottomRight;
+
+                var probability = prediction[i].probability;
+
+                const scaledStartX = start[0] * finalVideoWidth;
+                const scaledStartY = start[1] * finalVideoHeight ;
+                const scaledWidth = (end[0] - start[0]) * finalVideoWidth;
+                const scaledHeight = (end[1] - start[1]) * finalVideoHeight;
+
+
+
+               // const size = [end[0]*finalVideoHeight - start[0]*finalVideoHeight, end[1]*finalVideoWidth - start[1]*finalVideoWidth];
+                // Render a rectangle over each detected face.
+                context_face.beginPath();
+                context_face.strokeStyle="green";
+                context_face.lineWidth = "4";
+                context_face.rect(scaledStartX, scaledStartY-50, scaledWidth, scaledHeight);
+                context_face.stroke();
+                var prob = (probability[0]*100).toPrecision(5).toString();
+                var text = prob+"%";
+                context_face.fillStyle = "red";
+                context_face.font = "13pt sans-serif";
+                context_face.fillText(text, scaledStartX + 5, scaledStartY + 20);
+    }
+        }else{
+          context_face.clearRect(0, 0, canvas_face.width, canvas_face.height);
+        }
+        setTimeout(faceDetection,250,videoOutput,context_face,CurrentVideoWidth,CurrentVideoHeight);
+}
+}
+
+
+
+/*
+async function test(){
+  const model_hand = handPoseDetection.SupportedModels.MediaPipeHands;
+const detectorConfig = {
+  runtime: 'mediapipe', // or 'tfjs'
+  modelType: 'full'
+};
+detector = await handPoseDetection.createDetector(model_hand, detectorConfig);
+  const hands = await detector.estimateHands(videoOutput);
+  console.log(hands);
+}
+*/
+
+</script>
+
+
+  <footer>
+    <small id="send-message"></small>
+  </footer>
+
+  <script src="https://www.webrtc-experiment.com/common.js"></script>
+
+</body>
+</html>
