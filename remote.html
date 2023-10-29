@@ -447,9 +447,11 @@ let canvas_face = document.getElementById('canvas_face');
 
 
 var videoPreview = document.getElementById('video-preview');
+videoPreview.playsInline = true;
 var videoOutput = document.getElementById('videoOutput');
+videoOutput.playsInline = true;
 var videoRecord = document.getElementById('video-record');
-
+videoRecord.playsInline = true;
 const liveView = document.getElementById('liveView');
 const demosSection = document.getElementById('demos');
 const loading = document.getElementById('loading');
