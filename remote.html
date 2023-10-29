@@ -469,9 +469,9 @@ connection.onstream = function(event) {
     }
     connection.isUpperUserLeft = false;
     
-    //videoPreview.srcObject = event.stream;
+    videoPreview.srcObject = event.stream;
     
-    //videoPreview.play();
+    videoPreview.play();
     
     videoPreview.userid = event.userid;
 
@@ -523,8 +523,8 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     // Merge the video and canvas streams into a combined stream
     const combinedStream = new MediaStream([...videoStream.getTracks(), ...canvasStream.getTracks()]);
 
-    videoPreview.srcObject = combinedStream;
-    videoPreview.play();
+  //  videoPreview.srcObject = combinedStream;
+  //  videoPreview.play();
 
     
     videoOutput.srcObject =canvasStream;
