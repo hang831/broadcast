@@ -436,7 +436,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
         connection.getSocket(function(socket) {
             socket.emit('can-relay-broadcast');
 
-            if (connection.DetectRTC.browser.name === 'Chrome' || connection.DetectRTC.browser.name === 'Edge' || DetectRTC.browser.name === 'Safari')  {
+            if (connection.DetectRTC.browser.name === 'Chrome' || connection.DetectRTC.browser.name === 'Edge' || connection.DetectRTC.browser.name === 'Safari')  {
                 connection.getAllParticipants().forEach(function(p) {
                     if (p + '' != event.userid + '') {
                         var peer = connection.peers[p].peer;
@@ -468,7 +468,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             // Firefox seems UN_ABLE to record remote MediaStream
             // WebAudio solution merely records audio
             // so recording is skipped for Firefox.
-            if (connection.DetectRTC.browser.name === 'Chrome' ||  DetectRTC.browser.name === 'Safari') {
+            if (connection.DetectRTC.browser.name === 'Chrome' ||  connection.DetectRTC.browser.name === 'Safari') {
                 repeatedlyRecordStream(event.stream);
             }
         });
