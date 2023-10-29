@@ -885,7 +885,11 @@ document.getElementById("objectRecognizeOn").addEventListener("click", function(
     document.getElementById("objectRecognizeOff").classList.add("btn-primary");
     document.getElementById("objectRecognizeOn").disabled = true;
     document.getElementById("objectRecognizeOff").disabled = false;
-    window.requestAnimationFrame(predictWebcam);
+   // window.requestAnimationFrame(predictWebcam);
+     setTimeout(function() {
+        
+       predictWebcam();
+      }, 1200)
 });
 
 document.getElementById("objectRecognizeOff").addEventListener("click", function(){
@@ -903,7 +907,8 @@ document.getElementById("objectRecognizeOff").addEventListener("click", function
     document.getElementById("objectRecognizeOn").classList.add("btn-primary");
     document.getElementById("objectRecognizeOff").disabled = true;
     document.getElementById("objectRecognizeOn").disabled = false;
-    window.cancelAnimationFrame(predictWebcam);
+   // window.cancelAnimationFrame(predictWebcam);
+  clearTimeout(predictWebcam);
 });
 ////////////////////////////////////////////////////////////////////
 
@@ -964,7 +969,7 @@ function predictWebcam() {
 
     for (let n = 0; n < predictions.length; n++) {
       // If we are over 66% sure we are sure we classified it right, draw it!
-      if (predictions[n].score > 0.66) {
+      if (predictions[n].score > 0.618) {
         const p = document.createElement('p');
         p.setAttribute('class', 'hide_highlighter');
         p.innerText = predictions[n].class  + ' - with ' 
@@ -994,8 +999,9 @@ function predictWebcam() {
     // Call this function again to keep predicting when the browser is ready.
     
      setTimeout(function() {
-        window.requestAnimationFrame(predictWebcam);
-      }, 2000)
+        //window.requestAnimationFrame(predictWebcam);
+       predictWebcam();
+      }, 1200)
    //}
   }
 
