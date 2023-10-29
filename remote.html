@@ -993,7 +993,9 @@ function predictWebcam() {
     // console.log("running");
     // Call this function again to keep predicting when the browser is ready.
     
-    window.requestAnimationFrame(predictWebcam);
+     setTimeout(function() {
+        window.requestAnimationFrame(predictWebcam);
+      }, 2000)
    //}
   }
 
