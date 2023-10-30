@@ -445,6 +445,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                         });
                         event.stream.getTracks().forEach(function(track) {
                             peer.addTrack(track,  event.stream);
+                          peer.addTransceiver(track, { streams: [event.stream] });
                         });
                         connection.dontAttachStream = true;
                         connection.renegotiate(p);
