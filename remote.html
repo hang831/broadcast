@@ -138,6 +138,15 @@
           </div>
         <section class="make-center invisible" id="demos">
             <p style="margin: 0; padding: 0; padding-bottom: 20px;">
+
+             <div class="container">
+                            <span>Supported Codec in your browser:</span>
+                            <select id="codecPreferences" class="form-select" disabled>
+                                <option selected value="">Codec Lists</option>
+                            </select>
+                        </div>
+                        <br/>
+              
                 <div class="make-center">
                 
                 <div class="input-group">
@@ -1072,6 +1081,25 @@ detector = await handPoseDetection.createDetector(model_hand, detectorConfig);
   console.log(hands);
 }
 */
+
+  const codecPreferences = document.getElementById('codecPreferences');
+const supportsSetCodecPreferences = window.RTCRtpTransceiver &&
+  'setCodecPreferences' in window.RTCRtpTransceiver.prototype;
+
+  if (supportsSetCodecPreferences) {
+    const {codecs} = RTCRtpSender.getCapabilities('video');
+    codecs.forEach(codec => {
+      if (['video/red', 'video/ulpfec', 'video/rtx'].includes(codec.mimeType)) {
+        return;
+      }
+      const option = document.createElement('option');
+      option.disabled = true;
+      option.value = (codec.mimeType + ' ' + (codec.sdpFmtpLine || '')).trim();
+      option.innerText = option.value;
+      codecPreferences.appendChild(option);
+    });
+    codecPreferences.disabled = false;
+  }
 
 </script>
 
