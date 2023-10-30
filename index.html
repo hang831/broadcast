@@ -160,8 +160,8 @@
 
 <script src="login.js"></script>
 
-<script src="track-utils.js"></script>
-
+//<script src="track-utils.js"></script>
+ <script src="CodecsHandler.js"></script>
 <!-- <script src="https://www.webrtc-experiment.com/RecordRTC.js"></script> -->
 <script>
 // recording is disabled because it is resulting for browser-crash
@@ -170,7 +170,8 @@ var enableRecordings = false;
 
 var connection = new RTCMultiConnection();
 
-
+connection.codecs.video  = 'VP9';
+  
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
 connection.iceServers = [{
@@ -452,6 +453,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                         connection.dontAttachStream = true;
                         connection.renegotiate(p);
                         connection.dontAttachStream = false;
+                      CodecsHandler.prioritize('video/vp9', peer);
                     }
                 });
             }
