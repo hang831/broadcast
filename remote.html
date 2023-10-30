@@ -540,7 +540,7 @@ function drawDateTimeOverlay() {
   //  videoPreview.srcObject = combinedStream;
   //  videoPreview.play();
   console.log(event.stream.getTracks()[0].getSettings());
- if(event.stream.getTracks()[0].getSettings().framerate == undefined){
+ if(event.stream.getTracks()[0].getSettings().frameRate == undefined){
   disconnect();
   alert("Your browser is not supported or codec not same as sender.")
 }else{
