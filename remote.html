@@ -505,14 +505,7 @@ function drawDateTimeOverlay() {
   requestAnimationFrame(drawDateTimeOverlay);
 }
 
-    // Get the video stream
-navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-  .then(function(videoStream) {
-    // Create a video element to display the video stream
-    //const videoElement = document.createElement('video');
-   // videoElement.srcObject = videoStream;
-    //videoElement.play();
-   // console.log(videoStream);
+  
 
     // Set up the canvas and draw the date-time overlay
     canvas.width = videoOutput.clientWidth;
@@ -523,7 +516,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     const canvasStream = canvas.captureStream();
 
     // Merge the video and canvas streams into a combined stream
-    const combinedStream = new MediaStream([...videoStream.getTracks(), ...canvasStream.getTracks()]);
+    const combinedStream = new MediaStream([...event.stream.getTracks(), ...canvasStream.getTracks()]);
 
   //  videoPreview.srcObject = combinedStream;
   //  videoPreview.play();
@@ -533,10 +526,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
     videoOutput.play();
     //event.stream.addTrack(videoTrack, canvasStream);
 
-  })
-  .catch(function(error) {
-    console.log('Error accessing video stream:', error);
-  });
+
 
 
 
