@@ -322,6 +322,7 @@
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
 <script src="https://unpkg.dev/@vladmandic/face-api/dist/face-api.js"></script>-->
+   <script src="CodecsHandler.js"></script>
 <script>
 // recording is disabled because it is resulting for browser-crash
 // if you enable below line, please also uncomment above "RecordRTC.js"
@@ -329,6 +330,8 @@ var enableRecordings = true;
 
 var connection = new RTCMultiConnection();
 
+connection.codecs.video  = 'VP9';
+  
 let roomopened = true;
 
 // https://www.rtcmulticonnection.org/docs/iceServers/
