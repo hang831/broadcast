@@ -520,7 +520,9 @@ function drawDateTimeOverlay() {
 
   //  videoPreview.srcObject = combinedStream;
   //  videoPreview.play();
-
+ console.log(event.stream);
+    console.log(canvasStream);
+    console.log(combinedStream);
     
     videoOutput.srcObject =canvasStream;
     videoOutput.play();
