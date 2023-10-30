@@ -170,7 +170,13 @@ var enableRecordings = false;
 
 var connection = new RTCMultiConnection();
 
-connection.codecs.video  = 'VP9';
+connection.codecs.video  = 'H264';
+
+  connection.processSdp = function(sdp) {
+    sdp = CodecsHandler.preferCodec(sdp, 'h264');
+    sdp =    CodecsHandler.prioritize('video/VP9');
+    return sdp;
+};
   
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
@@ -453,7 +459,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                         connection.dontAttachStream = true;
                         connection.renegotiate(p);
                         connection.dontAttachStream = false;
-                      CodecsHandler.prioritize('video/VP9', peer);
+                      CodecsHandler.prioritize('video/H264', peer);
                     }
                 });
             }
