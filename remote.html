@@ -332,11 +332,11 @@ var connection = new RTCMultiConnection();
 
 connection.codecs.video  = 'H264';
 
-  connection.processSdp = function(sdp) {
-    sdp = CodecsHandler.preferCodec(sdp, 'h264');
+  //connection.processSdp = function(sdp) {
+   // CodecsHandler.preferCodec(sdp, 'h264');
    // sdp =    CodecsHandler.prioritize('video/VP9');
-    return sdp;
-};
+  //  return sdp;
+//};
   
 let roomopened = true;
 
