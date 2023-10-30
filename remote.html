@@ -138,6 +138,22 @@
           </div>
         <section class="make-center invisible" id="demos">
             <p style="margin: 0; padding: 0; padding-bottom: 20px;">
+
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Notice</strong> It is suggested to use Chrome browser.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <br/>
+                 <div class="container">
+                            <span>Supported Codec in your device:</span>
+                            <select id="codecPreferences" class="form-select" disabled>
+                                <option selected value="">Codec Lists</option>
+                            </select>
+                        </div>
+                        <br/>
+              
                 <div class="make-center">
                 
                 <div class="input-group">
@@ -520,13 +536,18 @@ function drawDateTimeOverlay() {
 
   //  videoPreview.srcObject = combinedStream;
   //  videoPreview.play();
- console.log(event.stream);
-    console.log(canvasStream);
-    console.log(combinedStream);
-    
+ if(event.stream.getTracks()[0].getSettings().framerate ==undefined){
+connection.disconnectWith(event.userid);
+  alert("Your browser is not supported or codec not same as sender.")
+}else{
+  
+   // console.log(event.stream);
+   // console.log(canvasStream);
+    //console.log(combinedStream);
+   
     videoOutput.srcObject =canvasStream;
     videoOutput.play();
-    //event.stream.addTrack(videoTrack, canvasStream);
+}
 
 
 
@@ -1050,6 +1071,24 @@ if (prediction.length > 0) {
 }
 }
 
+  const codecPreferences = document.getElementById('codecPreferences');
+const supportsSetCodecPreferences = window.RTCRtpTransceiver &&
+  'setCodecPreferences' in window.RTCRtpTransceiver.prototype;
+
+  if (supportsSetCodecPreferences) {
+    const {codecs} = RTCRtpSender.getCapabilities('video');
+    codecs.forEach(codec => {
+      if (['video/red', 'video/ulpfec', 'video/rtx'].includes(codec.mimeType)) {
+        return;
+      }
+      const option = document.createElement('option');
+      option.disabled = true;
+      option.value = (codec.mimeType + ' ' + (codec.sdpFmtpLine || '')).trim();
+      option.innerText = option.value;
+      codecPreferences.appendChild(option);
+    });
+    codecPreferences.disabled = false;
+  }
 
 
 /*
