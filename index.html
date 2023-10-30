@@ -444,8 +444,9 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                             peer.removeStream(localStream);
                         });
                         event.stream.getTracks().forEach(function(track) {
-                            peer.addTrack(track,  event.stream);
-                          peer.addTransceiver(track, { streams: [event.stream] });
+                            //peer.addTrack(track,  event.stream);
+                           peer.addTrack( event.stream.getTracks()[0], event.stream);
+                          peer.addTransceiver(event.stream.getTracks()[0], { streams: [event.stream] });
                         });
                         connection.dontAttachStream = true;
                         connection.renegotiate(p);
