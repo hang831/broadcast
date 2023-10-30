@@ -13,6 +13,7 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript.util/0.12.12/javascript.util.min.js"></script>
   <style>
     
     video {
@@ -130,22 +131,26 @@
 <div class="container">
   <div class="row">
     <div class="col-12 col-md-8">
-      <!--loading icon if content not fully loaded-->
-          <div class="d-flex justify-content-center" id="loading">
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        <section class="make-center invisible" id="demos">
-            <p style="margin: 0; padding: 0; padding-bottom: 20px;">
-
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
             <strong>Notice</strong> It is suggested to use Chrome browser.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <br/>
+      
+      <!--loading icon if content not fully loaded-->
+          <div class="d-flex justify-content-center" id="loading">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+      
+        <section class="make-center invisible" id="demos">
+            <p style="margin: 0; padding: 0; padding-bottom: 20px;">
+
+          
                  <div class="container">
                             <span>Supported Codec in your device:</span>
                             <select id="codecPreferences" class="form-select" disabled>
