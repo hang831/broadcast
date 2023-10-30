@@ -171,12 +171,12 @@ var enableRecordings = false;
 var connection = new RTCMultiConnection();
 
 connection.codecs.video  = 'H264';
-
+/*
   connection.processSdp = function(sdp) {
     sdp = CodecsHandler.preferCodec(sdp, 'h264');
     sdp =    CodecsHandler.prioritize('video/VP9');
     return sdp;
-};
+};*/
   
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
