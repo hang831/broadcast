@@ -330,7 +330,8 @@ var enableRecordings = true;
 
 var connection = new RTCMultiConnection();
 
-connection.codecs.video  = 'H264';
+//connection.codecs.video  = 'H264';
+  connection.codecs.video  = 'VP9';
 
   //connection.processSdp = function(sdp) {
    // CodecsHandler.preferCodec(sdp, 'h264');
@@ -616,7 +617,7 @@ function drawDateTimeOverlay() {
 
     // to keep room-id in cache
     localStorage.setItem(connection.socketMessageEvent, connection.sessionid);
-   
+   console.log(connection.codecs.video);
   };
 
 // ask node.js server to look for a broadcast
