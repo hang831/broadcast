@@ -170,7 +170,10 @@ var enableRecordings = false;
 
 var connection = new RTCMultiConnection();
 
-connection.codecs.video  = 'H264';
+//connection.codecs.video  = 'H264';
+  connection.codecs.video  = 'VP9';
+  connection.preferVP9 = true;
+  console.log(connection.codecs.video);
 /*
   connection.processSdp = function(sdp) {
     sdp = CodecsHandler.preferCodec(sdp, 'h264');
@@ -459,7 +462,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: false })
                         connection.dontAttachStream = true;
                         connection.renegotiate(p);
                         connection.dontAttachStream = false;
-                      CodecsHandler.prioritize('video/H264', peer);
+                      CodecsHandler.prioritize('video/VP9', peer);
                     }
                 });
             }
