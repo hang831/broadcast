@@ -351,11 +351,19 @@ connection.iceServers = [{
     ]
 }];
 
+  // enable only relay ip-addresses
+connection.candidates = {
+    turn: true,
+    stun: true,
+    host: false
+};
+
+
 // its mandatory in v3
 connection.enableScalableBroadcast = true;
 
-// each relaying-user should serve only 1 users
-connection.maxRelayLimitPerUser = 1;
+// each relaying-user should serve only 5 users
+connection.maxRelayLimitPerUser = 5;
 
 // we don't need to keep room-opened
 // scalable-broadcast.js will handle stuff itself.
