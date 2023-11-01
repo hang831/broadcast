@@ -187,6 +187,9 @@
 
             <button id="recording" class="btn btn-primary" disabled>
                 Recording
+               <div class="spinner-grow spinner-grow-sm text-danger d-none" role="status" id="spinner-grow">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
            </button>
 
            <button id="stoprecording" class="btn btn-primary" disabled>
@@ -770,6 +773,7 @@ document.getElementById("showrecording").addEventListener('click', showrecord);
 function record() {
             document.getElementById('recording').disabled = true; 
             document.getElementById('stoprecording').disabled = false; 
+           document.getElementById('spinner-grow').classList.remove("d-none");
             // Firefox seems UN_ABLE to record remote MediaStream
             // WebAudio solution merely records audio
             // so recording is skipped for Firefox.
@@ -784,6 +788,7 @@ function stoprecord(){
             document.getElementById('showrecording').disabled = false; 
             document.getElementById('stoprecording').disabled = true; 
             timergoing= false;
+            document.getElementById('spinner-grow').classList.add("d-none");
         }
         
 function showrecord(){
