@@ -177,27 +177,38 @@
             
             <br/>
 
-            <button id="photo-button" class="btn btn-success">
+            <button id="photo-button" class="btn btn-success mt-1">
                 <i class="fa-solid fa-camera"></i> Take Photo
             </button>
 
-            <button id="disconnect-button" class="btn btn-danger">
+            <button id="disconnect-button" class="btn btn-dange mt-1">
                  Disconnect
             </button>
 
-            <button id="recording" class="btn btn-primary" disabled>
+            <button id="recording" class="btn btn-primary mt-1" disabled>
                 Recording
                <div class="spinner-grow spinner-grow-sm text-danger d-none" role="status" id="spinner-grow">
                   <span class="visually-hidden">Loading...</span>
                 </div>
            </button>
 
-           <button id="stoprecording" class="btn btn-primary" disabled>
+           <button id="stoprecording" class="btn btn-primary mt-1" disabled>
             Stop Recording
            </button>
-           <button id="showrecording" class="btn btn-primary" disabled>
+              
+           <button id="showrecording" class="btn btn-primary mt-1" disabled>
             Show Recording
            </button>
+
+          <button id="showAllrecording" class="btn btn-primary mt-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Show All Recording
+          </button>
+  
+        <div class="collapse" id="collapseExample">
+          <div class="card card-body text-dark" id="recording_content">
+            No record.
+          </div>
+        </div>
            
            <video id="video-record" playsinline  controls loop muted class="d-none"></video>
               <hr>
@@ -792,12 +803,33 @@ function stoprecord(){
         }
         
 function showrecord(){
-            videoRecord.classList.remove("d-none");
+    
+            if( connection.currentRecorder.getBlob() != null){
+            allRecordedBlobs.push(URL.createObjectURL(connection.currentRecorder.getBlob())); 
+            videoRecord.classList.remove("d-none");  
             videoRecord.src = URL.createObjectURL(connection.currentRecorder.getBlob());
             videoRecord.play();
+            document.getElementById('showrecording').disabled = true;  
+            document.getElementById('recording').disabled = false; 
+            showAllrecording();
+            } else{
+            alert("Please try again. Recording video is still loading");
             document.getElementById('showrecording').disabled = false;  
             document.getElementById('recording').disabled = false; 
+            }       
 }
+
+function showAllrecording(){
+  var records = allRecordedBlobs;
+  records.sort();
+
+  var recordsHTML = records.map(record => `<a href="${record}" target="_blank">${record}</a>`).join('<br>');
+  
+  document.getElementById('recording_content').innerHTML =recordsHTML;
+  
+  //console.log(allRecordedBlobs)
+}
+
 
 function recordbuttonenable(){
             document.getElementById('recording').disabled = false; 
