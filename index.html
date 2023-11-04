@@ -130,6 +130,16 @@
                         <input class="text-black form-control" type="text" id="broadcast-id" value="eie4428-project" autocorrect=off autocapitalize=off size=20 disabled >
                         <button class="btn btn-primary" id="open-or-join">Create Broadcast</button>
                     </div>
+
+                    <br/>
+                      <form class="row g-3">
+                          <div class="input-group">
+                              <span class="input-group-text bg-success text-white">Message</span>
+                            <input type="text" class="form-control" id="Message" placeholder="Broadcast Message" >
+          
+                            <button id="Message_send" type="button" class="btn btn-success text-white" disabled>Send</button>
+                          </div>
+                        </form>
                
               
 
@@ -532,6 +542,30 @@ document.getElementById('open-or-join').onclick = function() {
     });
 };
 
+
+
+connection.onopen = function(event) {
+    connection.send('Hello everyone');
+};
+
+
+document.getElementById("Message_send").addEventListener('click', message);
+
+function message(){
+
+  var content = document.getElementById("Message").value;
+ // console.log(content);
+  if (content == "") {
+    return
+  }else{
+    var time = new Date().toLocaleString()
+    var finalString = "<strong>"+content+"</strong>"+" at "+  "<span style='color:grey'>"+
+        time+"</span>";
+    connection.send(finalString); 
+  }
+
+}  
+
 connection.onstreamended = function() {};
 
 connection.onMediaError = function(e) {
@@ -688,6 +722,11 @@ function predictWebcam() {
 */
 
 
+videoPreview.addEventListener("loadeddata", enableMessage);
+
+function enableMessage() {
+    document.getElementById('Message_send').disabled = false;
+}
 
 
 
