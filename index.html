@@ -311,7 +311,6 @@ connection.connectSocket(function(socket) {
 });
 
 window.onbeforeunload = function() {
-    // Firefox is ugly.
     document.getElementById('open-or-join').disabled = false;
 };
 
@@ -562,6 +561,7 @@ function message(){
     var finalString = "<strong>"+content+"</strong>"+" at "+  "<span style='color:grey'>"+
         time+"</span>";
     connection.send(finalString); 
+    document.getElementById("Message").value="";
   }
 
 }  
