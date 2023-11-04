@@ -134,6 +134,27 @@
   </h1>
   <br />
 <div class="container">
+
+<div class="accordion d-none" id="accordionExample">
+    <div class="accordion-item">
+      
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Text Broadcast
+        </button>
+      
+      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div class="accordion-body" id="message_content">
+          
+
+        </div>
+        <br/>
+        <button class="btn btn-primary" id="clear_message">Clear</button>
+      </div>
+    </div>   
+  </div>
+
+
+  
   <div class="row">
     <div class="col-12 col-md-8">
       
@@ -833,6 +854,7 @@ function showAllrecording(){
 
 function recordbuttonenable(){
             document.getElementById('recording').disabled = false; 
+            document.getElementById('accordionExample').classList.remove("d-none");
 }
 
 
@@ -1161,6 +1183,18 @@ detector = await handPoseDetection.createDetector(model_hand, detectorConfig);
 }
 */
 
+
+connection.onmessage = function(event) {
+
+document.getElementById("message_content").innerHTML += ("<small>"+event.userid +"</small> said: "+ event.data+"<br/>");
+};
+
+document.getElementById("clear_message").addEventListener('click', clearMessage);
+
+function clearMessage() {
+  document.getElementById("message_content").innerHTML = "";
+}
+  
 </script>
 
 
