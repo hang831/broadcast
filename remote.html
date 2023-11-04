@@ -679,7 +679,8 @@ document.getElementById('open-or-join').onclick = function() {
     connection.session = {
         audio: false,
         video: true,
-        oneway: true
+        oneway: true,
+        data: true
     };
 
     connection.getSocket(function(socket) {
