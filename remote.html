@@ -376,16 +376,26 @@ var connection = new RTCMultiConnection();
   
 let roomopened = true;
 
+// first step, ignore default STUN+TURN servers
+connection.iceServers = [];
+  
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
-connection.iceServers = [{
+connection.iceServers.push({
     'urls': [
         'stun:108.177.125.127',
         'stun:stun.l.google.com:19302',  
         'stun:stun1.l.google.com:19302',
         'stun:stun2.l.google.com:19302'
     ]
-}];
+});
+
+// last step, set TURN url (recommended)
+connection.iceServers.push({
+    urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+    credential: 'tE2DajzSJwnsSbc123',
+    username: 'dc2d2894d5a9023620c467b0e71cfa6a35457e6679785ed6ae9856fe5bdfa269'
+});  
 
   // enable only relay ip-addresses
 connection.candidates = {
