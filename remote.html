@@ -378,6 +378,7 @@ let roomopened = true;
   
 // to get both STUN and TURN candidate pairs
 connection.iceTransportPolicy = 'all';
+ connection.bundlePolicy = 'max-bundle';
   
 // first step, ignore default STUN+TURN servers
 connection.iceServers = [];
