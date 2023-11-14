@@ -194,12 +194,12 @@ var connection = new RTCMultiConnection();
 // to get both STUN and TURN candidate pairs
 connection.iceTransportPolicy = 'all';
 //connection.bundlePolicy = 'max-bundle';
-/*
+
   connection.candidates = {
     turn: true,
-    stun: true,
+    stun: false,
     host: false
-};   */
+};   
   
 // first step, ignore default STUN+TURN servers
 connection.iceServers = [];
