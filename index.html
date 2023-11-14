@@ -194,6 +194,7 @@ var connection = new RTCMultiConnection();
 // to get both STUN and TURN candidate pairs
 connection.iceTransportPolicy = 'all';
 //connection.bundlePolicy = 'max-bundle';
+  
 /*
   connection.candidates = {
     turn: true,
@@ -208,7 +209,7 @@ connection.iceServers = [];
 // use your own TURN-server here!
 connection.iceServers.push({
     'urls': [
-        'stun:108.177.125.127',
+       // 'stun:108.177.125.127',
         'stun:stun.l.google.com:19302',  
         'stun:stun1.l.google.com:19302',
         'stun:stun2.l.google.com:19302'
