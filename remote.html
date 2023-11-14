@@ -377,11 +377,11 @@ var connection = new RTCMultiConnection();
 let roomopened = true;
   
 // to get both STUN and TURN candidate pairs
-connection.iceTransportPolicy = 'relay';
+connection.iceTransportPolicy = 'all';
 
 connection.candidates = {
     turn: true,
-    stun: false,
+    stun: true,
     host: false
 };  
   
@@ -396,7 +396,6 @@ connection.iceServers.push({
 });    
   
 // https://www.rtcmulticonnection.org/docs/iceServers/
-// use your own TURN-server here!
 connection.iceServers.push({
     'urls': [
         'stun:108.177.125.127'
@@ -405,8 +404,6 @@ connection.iceServers.push({
        // 'stun:stun2.l.google.com:19302'
     ]
 }); 
-
-
 
 
 
