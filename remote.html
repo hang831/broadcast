@@ -382,7 +382,8 @@ connection.iceTransportPolicy = 'all';
   
 // first step, ignore default STUN+TURN servers
 connection.iceServers = [];
-  
+
+  /*
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
 connection.iceServers.push({
@@ -392,7 +393,7 @@ connection.iceServers.push({
         'stun:stun1.l.google.com:19302',
         'stun:stun2.l.google.com:19302'
     ]
-});
+}); */
 
 // last step, set TURN url (recommended)
 connection.iceServers.push({
