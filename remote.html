@@ -377,7 +377,7 @@ var connection = new RTCMultiConnection();
 let roomopened = true;
   
 // to get both STUN and TURN candidate pairs
-connection.iceTransportPolicy = 'all';
+connection.iceTransportPolicy = 'relay';
 
 connection.candidates = {
     turn: true,
