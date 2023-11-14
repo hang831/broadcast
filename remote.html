@@ -379,10 +379,21 @@ let roomopened = true;
 // to get both STUN and TURN candidate pairs
 connection.iceTransportPolicy = 'all';
 
+connection.candidates = {
+    turn: true,
+    stun: true,
+    host: false
+};  
   
 // first step, ignore default STUN+TURN servers
 connection.iceServers = [];
 
+// last step, set TURN url (recommended)
+connection.iceServers.push({
+    urls: 'turn:global.turn.twilio.com:443?transport=tcp',
+    credential: 'tE2DajzSJwnsSbc123',
+    username: 'dc2d2894d5a9023620c467b0e71cfa6a35457e6679785ed6ae9856fe5bdfa269'
+});    
   
 // https://www.rtcmulticonnection.org/docs/iceServers/
 // use your own TURN-server here!
@@ -395,19 +406,8 @@ connection.iceServers.push({
     ]
 }); 
 
-// last step, set TURN url (recommended)
-connection.iceServers.push({
-    urls: 'turn:global.turn.twilio.com:443?transport=tcp',
-    credential: 'tE2DajzSJwnsSbc123',
-    username: 'dc2d2894d5a9023620c467b0e71cfa6a35457e6679785ed6ae9856fe5bdfa269'
-});  
 
-  // enable only relay ip-addresses
-connection.candidates = {
-    turn: true,
-    stun: true,
-    host: false
-};
+
 
 
 // its mandatory in v3
