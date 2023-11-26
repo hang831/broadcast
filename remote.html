@@ -790,7 +790,7 @@ function repeatedlyRecordStream(stream) {
     timergoing = true;
     connection.currentRecorder = RecordRTC(stream, {
         type: 'video',
-         mimeType: 'video/mp4'
+         mimeType: 'video/x-matroska;codecs=avc1'
     });
   
     connection.currentRecorder.startRecording();
