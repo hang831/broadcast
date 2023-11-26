@@ -606,13 +606,13 @@ function drawDateTimeOverlay() {
   //  videoPreview.srcObject = combinedStream;
   //  videoPreview.play();
   console.log(event.stream.getTracks()[0].getSettings());
- if(event.stream.getTracks()[0].getSettings().frameRate == undefined){
+/* if(event.stream.getTracks()[0].getSettings().frameRate == undefined){
   
   alert("Your browser is not supported or your Codec not same as sender.")
     videoOutput.srcObject =canvasStream;
     videoOutput.play();
  // disconnect();
-}else{
+}else{  */
   
    // console.log(event.stream);
    // console.log(canvasStream);
@@ -620,10 +620,11 @@ function drawDateTimeOverlay() {
    
     videoOutput.srcObject =canvasStream;
     videoOutput.play();
-}
+} */
 
 
-
+  videoOutput.srcObject =canvasStream;
+    videoOutput.play();
 
 
 
