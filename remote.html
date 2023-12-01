@@ -1037,6 +1037,7 @@ document.getElementById("FaceTrackingOn").addEventListener("click", function(){
   document.getElementById("FaceTrackingOff").classList.add("btn-primary");
   document.getElementById("FaceTrackingOn").disabled = true;
   document.getElementById("FaceTrackingOff").disabled = false;
+  canvas_face.classList.remove("d-none");
   
   faceDetection(videoOutput, context_face, videoOutput.ClientWidth, videoOutput.ClientHeight);
     }, false);
@@ -1053,6 +1054,7 @@ document.getElementById("FaceTrackingOff").addEventListener("click", function(){
   document.getElementById("FaceTrackingOn").classList.add("btn-primary");
   document.getElementById("FaceTrackingOff").disabled = true;
   document.getElementById("FaceTrackingOn").disabled = false;
+  canvas_face.classList.add("d-none");
   clearTimeout(faceDetection,250,videoOutput,context_face,CurrentVideoWidth,CurrentVideoHeight);
 });
 
