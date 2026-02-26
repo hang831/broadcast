@@ -1,6 +1,6 @@
 # Broadcast System
-https://eie4428miniproject.netlify.app/
-https://eie4428miniproject.netlify.app/remote
+https://webrtctesttool.netlify.app/
+https://webrtctesttool.netlify.app/remote
 
 # How to Use?
 Broadcaster goto https://eie4428miniproject.netlify.app/ login with the username and password: admin, turn on camera and start streaming.
